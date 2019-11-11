@@ -1,0 +1,164 @@
+from collections import Counter
+from Tree import Tree
+from multiprocessing import Process
+
+st = ' the the the quick brown fox jumped over lazy dog over and over again and again bst.py source code is developed '\
+     'and tested by mahdi over 3000 times abd abd abd abd abd my name my name my name is mahdi abd my name is ' \
+     'mahdi abd lorem issue lorem issue lorem issue lorem issue lorem issue lorem issue '
+sp = st.split()
+count = Counter(sp)
+print(count)
+
+# i = input('enter your string: ')
+i = "11 11 11 11 11 11 11 11 11 11 11 9 9 9 9 9 9 9 9 9 8 8 8 8 8 8 8 8 e e e e e e e e 10 10 10 10 10 10 10 10 10 10 "\
+    "13 13 13 13 13 13 13 13 13 13 13 13 13 12 12 12 12 12 12 12 12 12 12 12 12 14 14 14 14 14 14 14 14 14 14 14 14 " \
+    "14 14 quick times n brown fox jumped lazy m"
+isp = i.split()
+iCount = Counter(isp)
+print(iCount)
+
+
+def main():
+
+    condition = False
+    bst = None
+    for key, val in count.items():
+        if not condition:
+            bst = Tree(key, val)
+            condition = True
+        else:
+            bst.insert(key, val)
+
+    cnd = False
+    new = None
+    for key, val in iCount.items():
+        if not cnd:
+            new = Tree(key, val)
+            cnd = True
+        else:
+            new.insert(key, val)
+
+    while True:
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        print("1. Traverse inOrder!")
+        print("2. Traverse preOrder!")
+        print("3. Insert a word to tree!")
+        print("4. Merge the New tree with the BST!")
+        print("5. Display max node for each node!")
+        print("6. Display each node's linked list!")
+        print("7. Remove nodes from tree!")
+        print("8. Asynchronous Insertion !")
+        print("9. Exit!")
+        print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+        option = input('Please choose one option: ')
+
+        if option == '1':
+            print("BST inOrder: ")
+            bst.in_order()
+            print("New Tree inOrder: ")
+            new.in_order()
+
+        elif option == '2':
+            print("BST preOrder: ", bst.pre_order())
+            print("New Tree preOrder: ", new.pre_order())
+
+        elif option == '3':
+            tre = input("Enter a valid tree name: ")
+            key = input("Enter your word to insert: ")
+            val = input("Enter the word's count: ")
+            if tre == "bst":
+                bst.insert(key, int(val))
+                print(bst.pre_order())
+                print("#", tre, val, "'s Linked List Is: ")
+                bst.show_list(int(val))
+            elif tre == "new":
+                new.insert(key, int(val))
+                print(new.pre_order())
+                print("#", tre, val, "'s Linked List Is: ")
+                new.show_list(int(val))
+            else:
+                print("This tree doesn't exist!")
+
+        elif option == '4':
+            bst.merge(new)
+            print("BST: ", bst.pre_order())
+            new.merge(bst)
+            print("New: ", new.pre_order())
+
+        elif option == '5':
+            print("BST: ")
+            bst.nodes_max()
+            print("NEW: ")
+            new.nodes_max()
+
+        elif option == '6':
+            tr = input("Enter the tree name: ")
+            nod = input("Enter the node number: ")
+            if tr == "bst":
+                bst.show_list(int(nod))
+            elif tr == "new":
+                new.show_list(int(nod))
+            else:
+                print("This tree doesn't exist!")
+
+        elif option == '7':
+            bst.remove(1)
+            bst.remove(2)
+            bst.remove(3)
+            bst.remove(4)
+            bst.remove(7)
+            bst.remove(8)
+
+        elif option == '8':
+            tre = input("Enter A Valid Tree Name: ")
+            if tre != "bst" and tre != "new":
+                print("This Tree Name Doesn't Exist :(")
+                want = input("Do You Want To Retry? (Y/N)")
+                if want == "Y":
+                    print(" PLEASE ENTER A VALID OPTION ! ")
+                    main()
+                else:
+                    print("See You Soon (^_^)")
+                break
+            nmb = int(input("Please Enter Number Of Words To Async Insert: "))
+            inserts = []
+            while nmb > 0:
+                key = input("Enter Your Words List To Insert: ")
+                inserts.append(key)
+                nmb -= 1
+            num = int(input("Please Enter The Count Of Repeating: "))
+            procs = []
+            if tre == "bst":
+                for each in inserts:
+                    print(each)
+                    proc = Process(target=bst.insert, args=(each, num,))
+                    procs.append(proc)
+                    proc.start()
+                    print(proc)
+                for proc in procs:
+                    proc.join()
+                print(bst.pre_order())
+                print("#", tre, num, "'s Linked List Is: ")
+                bst.show_list(num)
+            elif tre == "new":
+                for each in inserts:
+                    print(each)
+                    proc = Process(target=new.insert, args=(each, num,))
+                    procs.append(proc)
+                    proc.start()
+                    print(proc)
+                for proc in procs:
+                    proc.join()
+                print(new.pre_order())
+                print("#", tre, num, "'s Linked List Is: ")
+                new.show_list(num)
+
+        elif option == '9':
+            print("See You Soon (^_^)")
+            break
+
+        else:
+            print(" PLEASE ENTER A VALID OPTION ! ")
+
+
+main()
