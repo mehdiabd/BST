@@ -1,6 +1,9 @@
-from collections import Counter
+import logging
+import concurrent.futures
 from Tree import Tree
+from collections import Counter
 from multiprocessing import Process
+
 
 st = ' the the the quick brown fox jumped over lazy dog over and over again and again bst.py source code is developed '\
      'and tested by mahdi over 3000 times abd abd abd abd abd my name my name my name is mahdi abd my name is ' \
@@ -47,8 +50,9 @@ def main():
         print("5. Display max node for each node!")
         print("6. Display each node's linked list!")
         print("7. Remove nodes from tree!")
-        print("8. Asynchronous Insertion !")
-        print("9. Exit!")
+        print("8. Asynchronous Insertion!")
+        print("9. Asynchronous Removal!")
+        print("10. Exit!")
         print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
         option = input('Please choose one option: ')
 
@@ -122,40 +126,87 @@ def main():
                 break
             nmb = int(input("Please Enter Number Of Words To Async Insert: "))
             inserts = []
+            format = "%(asctime)s: %(message)s"
+            logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
             while nmb > 0:
                 key = input("Enter Your Words List To Insert: ")
                 inserts.append(key)
                 nmb -= 1
             num = int(input("Please Enter The Count Of Repeating: "))
-            procs = []
+            maxi = int(input("Please Enter Maximum Number Of Concurrent Threads: "))
             if tre == "bst":
-                for each in inserts:
-                    print(each)
-                    proc = Process(target=bst.insert, args=(each, num,))
-                    procs.append(proc)
-                    proc.start()
-                    print(proc)
-                for proc in procs:
-                    proc.join()
+                database = bst
+                logging.getLogger().setLevel(logging.DEBUG)
+                logging.info("Async Insert Info: Number Of Triggered Threads is %d.", database.value)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=maxi) as executor:
+                    for each in inserts:
+                        executor.submit(database.async_insert, each, num)
+                logging.info("Async Insert Info: Number Of Triggered Threads is %d.", database.value)
                 print(bst.pre_order())
                 print("#", tre, num, "'s Linked List Is: ")
                 bst.show_list(num)
             elif tre == "new":
-                for each in inserts:
-                    print(each)
-                    proc = Process(target=new.insert, args=(each, num,))
-                    procs.append(proc)
-                    proc.start()
-                    print(proc)
-                for proc in procs:
-                    proc.join()
+                database = new
+                logging.getLogger().setLevel(logging.DEBUG)
+                logging.info("Async Insert Info: Number Of Triggered Threads is %d.", database.value)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=maxi) as executor:
+                    for each in inserts:
+                        executor.submit(database.async_insert, each, num)
+                logging.info("Async Insert Info: Number Of Triggered Threads is %d.", database.value)
                 print(new.pre_order())
                 print("#", tre, num, "'s Linked List Is: ")
                 new.show_list(num)
 
         elif option == '9':
+            tre = input("Enter A Valid Tree Name: ")
+            if tre != "bst" and tre != "new":
+                print("This Tree Name Doesn't Exist :(")
+                want = input("Do You Want To Retry? (Y/N)")
+                if want == "Y":
+                    print(" PLEASE ENTER A VALID OPTION ! ")
+                    main()
+                else:
+                    print("See You Soon (^_^)")
+                break
+            nmb = int(input("Please Enter Number Of Nodes To Async Remove: "))
+            inserts = []
+            format = "%(asctime)s: %(message)s"
+            logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
+            while nmb > 0:
+                key = input("Enter Your Nodes To Remove: ")
+                inserts.append(key)
+                nmb -= 1
+            maxi = int(input("Please Enter Maximum Number Of Concurrent Threads: "))
+            if tre == "bst":
+                database = bst
+                logging.getLogger().setLevel(logging.DEBUG)
+                logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=maxi) as executor:
+                    for each in inserts:
+                        executor.submit(database.async_remove, each)
+                logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
+                print(bst.pre_order())
+            elif tre == "new":
+                database = new
+                logging.getLogger().setLevel(logging.DEBUG)
+                logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
+                with concurrent.futures.ThreadPoolExecutor(max_workers=maxi) as executor:
+                    for each in inserts:
+                        executor.submit(database.async_remove, each)
+                logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
+                print(new.pre_order())
+
+        elif option == '10':
             print("See You Soon (^_^)")
             break
+
+        elif option == '11':
+            test = input('enter your string: ')
+            testsp = test.split()
+            testCount = Counter(testsp)
+            for key, val in testCount.items():
+                bst.insert(key, val)
+            print(bst.pre_order())
 
         else:
             print(" PLEASE ENTER A VALID OPTION ! ")

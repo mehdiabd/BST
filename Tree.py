@@ -1,3 +1,6 @@
+import time
+import logging
+import threading
 from linkList import LinkList
 
 
@@ -9,6 +12,8 @@ class Tree:
         self.lst = LinkList(key)
         self.max = self.no
         self.parent = None
+        self.value = 0
+        self._lock = threading.Lock()
 
     def in_order(self):
         if self.left:
@@ -43,6 +48,20 @@ class Tree:
                 self.right = Tree(key, val)
                 self.max = max(val, self.max)
                 self.right.parent = self
+
+    def async_insert(self, name, val):
+        logging.info("Thread %s: starting insert", name)
+        logging.debug("Thread %s about to lock", name)
+        with self._lock:
+            logging.debug("Thread %s has lock", name)
+            local_copy = self.value
+            local_copy += 1
+            time.sleep(.2)
+            self.value = local_copy
+            self.insert(name, val)
+            logging.debug("Thread %s about to release lock", name)
+        logging.debug("Thread %s after release", name)
+        logging.info("Thread %s: finishing insert", name)
 
     def mrg(self, tree):
         if self.no == tree.no:
@@ -137,3 +156,17 @@ class Tree:
             else:
                 print("Not Found !")
                 return False
+
+    def async_remove(self, name):
+        logging.info("Thread %s: starting insert", name)
+        logging.debug("Thread %s about to lock", name)
+        with self._lock:
+            logging.debug("Thread %s has lock", name)
+            local_copy = self.value
+            local_copy += 1
+            time.sleep(.2)
+            self.value = local_copy
+            self.remove(name)
+            logging.debug("Thread %s about to release lock", name)
+        logging.debug("Thread %s after release", name)
+        logging.info("Thread %s: finishing insert", name)
