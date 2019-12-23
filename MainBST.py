@@ -2,15 +2,12 @@ import logging
 import concurrent.futures
 from Tree import Tree
 from collections import Counter
-from multiprocessing import Process
-
 
 st = ' the the the quick brown fox jumped over lazy dog over and over again and again bst.py source code is developed '\
      'and tested by mahdi over 3000 times abd abd abd abd abd my name my name my name is mahdi abd my name is ' \
      'mahdi abd lorem issue lorem issue lorem issue lorem issue lorem issue lorem issue '
 sp = st.split()
 count = Counter(sp)
-print(count)
 
 # i = input('enter your string: ')
 i = "11 11 11 11 11 11 11 11 11 11 11 9 9 9 9 9 9 9 9 9 8 8 8 8 8 8 8 8 e e e e e e e e 10 10 10 10 10 10 10 10 10 10 "\
@@ -18,7 +15,6 @@ i = "11 11 11 11 11 11 11 11 11 11 11 9 9 9 9 9 9 9 9 9 8 8 8 8 8 8 8 8 e e e e 
     "14 14 quick times n brown fox jumped lazy m"
 isp = i.split()
 iCount = Counter(isp)
-print(iCount)
 
 
 def main():
@@ -106,11 +102,17 @@ def main():
                 print("This tree doesn't exist!")
 
         elif option == '7':
+            print('Removing 1: ')
             bst.remove(1)
+            print('Removing 2: ')
             bst.remove(2)
+            print('Removing 3: ')
             bst.remove(3)
+            print('Removing 4: ')
             bst.remove(4)
+            print('Removing 7: ')
             bst.remove(7)
+            print('Removing 8: ')
             bst.remove(8)
 
         elif option == '8':
@@ -169,12 +171,12 @@ def main():
                     print("See You Soon (^_^)")
                 break
             nmb = int(input("Please Enter Number Of Nodes To Async Remove: "))
-            inserts = []
+            removes = []
             format = "%(asctime)s: %(message)s"
             logging.basicConfig(format=format, level=logging.INFO, datefmt="%H:%M:%S")
             while nmb > 0:
                 key = input("Enter Your Nodes To Remove: ")
-                inserts.append(key)
+                removes.append(key)
                 nmb -= 1
             maxi = int(input("Please Enter Maximum Number Of Concurrent Threads: "))
             if tre == "bst":
@@ -182,7 +184,7 @@ def main():
                 logging.getLogger().setLevel(logging.DEBUG)
                 logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
                 with concurrent.futures.ThreadPoolExecutor(max_workers=maxi) as executor:
-                    for each in inserts:
+                    for each in removes:
                         executor.submit(database.async_remove, each)
                 logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
                 print(bst.pre_order())
@@ -191,7 +193,7 @@ def main():
                 logging.getLogger().setLevel(logging.DEBUG)
                 logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
                 with concurrent.futures.ThreadPoolExecutor(max_workers=maxi) as executor:
-                    for each in inserts:
+                    for each in removes:
                         executor.submit(database.async_remove, each)
                 logging.info("Async Remove Info: Number Of Triggered Threads is %d.", database.value)
                 print(new.pre_order())
@@ -199,14 +201,6 @@ def main():
         elif option == '10':
             print("See You Soon (^_^)")
             break
-
-        elif option == '11':
-            test = input('enter your string: ')
-            testsp = test.split()
-            testCount = Counter(testsp)
-            for key, val in testCount.items():
-                bst.insert(key, val)
-            print(bst.pre_order())
 
         else:
             print(" PLEASE ENTER A VALID OPTION ! ")

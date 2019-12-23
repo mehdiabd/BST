@@ -114,6 +114,7 @@ class Tree:
                 print(" N O T  F O U N D ! ")
 
     def remove(self, inp):
+        inp = int(inp)
         if inp < self.max:
             self.rmv(inp)
             print(self.pre_order())
@@ -158,15 +159,15 @@ class Tree:
                 return False
 
     def async_remove(self, name):
-        logging.info("Thread %s: starting insert", name)
+        logging.info("Thread %s: starting remove", name)
         logging.debug("Thread %s about to lock", name)
         with self._lock:
             logging.debug("Thread %s has lock", name)
             local_copy = self.value
             local_copy += 1
-            time.sleep(.2)
+            time.sleep(.1)
             self.value = local_copy
             self.remove(name)
             logging.debug("Thread %s about to release lock", name)
         logging.debug("Thread %s after release", name)
-        logging.info("Thread %s: finishing insert", name)
+        logging.info("Thread %s: finishing remove", name)
